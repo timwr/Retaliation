@@ -79,6 +79,8 @@ import re
 import json
 import urllib2
 import base64
+import tty
+import termios
 
 import usb.core
 import usb.util
@@ -177,6 +179,15 @@ def usage():
     print "             to test targeting of chris as defined in your command set."
     print ""
 
+def getchar():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
 
 def setup_usb():
     # Tested only with the Cheeky Dream Thunder
@@ -254,6 +265,24 @@ def run_command(command, value):
         for i in range(value):
             send_cmd(FIRE)
             time.sleep(4.5)
+    elif command == "aim":
+        while True:
+            char = getchar()
+            if char == "A":
+                send_move(UP, 80)
+            elif char == "B":
+                send_move(DOWN, 80)
+            elif char == "D":
+                send_move(LEFT, 80)
+            elif char == "C":
+                send_move(RIGHT, 80)
+            elif char == chr(13):
+                send_cmd(FIRE)
+                time.sleep(4.5)
+            elif char == chr(4) or char == chr(3):
+                break
+            #else:
+                #print "got " + char + " hex " + '%02x' % ord(char)
     else:
         print "Error: Unknown command: '%s'" % command
 
