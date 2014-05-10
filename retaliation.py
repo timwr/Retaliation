@@ -172,6 +172,7 @@ def usage():
     print "     zero  - park at zero position (bottom-left)"
     print "     pause - pause <value> milliseconds"
     print "     led   - turn the led on or of (1 or 0)"
+    print "     aim   - control with the arrow keys, enter to fire"
     print ""
     print "     <command_set_name> - run/test a defined COMMAND_SET"
     print "             e.g. run:"
